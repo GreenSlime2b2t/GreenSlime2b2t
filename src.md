@@ -1,0 +1,175 @@
+from colorama import Fore, init
+import time
+import subprocess
+import psutil
+import webbrowser
+import os
+import random
+import string
+import py2exe
+
+print("SchoolCheater v1.1")
+print(Fore.LIGHTGREEN_EX+"Programmed by Daniel")
+
+time.sleep(1)
+
+def wlanpassword():
+    os.system("netsh wlan show profile")
+    wlan = input("Choose Network to find password: ")
+    os.system("netsh wlan show profile name="+wlan+" key=clear")
+def terminal():
+    ter = input("Command for terminal: ")
+    os.system(ter)
+def print_logo(color=Fore.BLUE):
+    text = '''
+      _____ _             _   _            _    _____                 _ 
+     / ____(_)           | | | |          | |  / ____|               | |
+    | |  __ _  __ _ _ __| |_| | ___ _ __ | |_| |  __  ___   ___   __| |
+    | | |_ | |/ _` | '__| __| |/ _ \ '_ \| __| | |_ |/ _ \ / _ \ / _` |
+    | |__| | | (_| | |  | |_| |  __/ | | | |_| |__| | (_) | (_) | (_| |
+     \_____|_|\__,_|_|   \__|_|\___|_| |_|\__|\_____|\___/ \___/ \__,_|
+    '''
+    init(autoreset=True)  # Initialize Colorama to autoreset colors
+    print(color + text)
+
+def costumize():
+    color = input("What color should be the text (type with big letters, for example: BLUE): ").upper()
+    color_map = {
+        "BLACK": Fore.BLACK,
+        "RED": Fore.RED,
+        "GREEN": Fore.GREEN,
+        "YELLOW": Fore.YELLOW,
+        "BLUE": Fore.BLUE,
+        "MAGENTA": Fore.MAGENTA,
+        "CYAN": Fore.CYAN,
+        "WHITE": Fore.WHITE
+    }
+    selected_color = color_map.get(color, Fore.BLUE)  # Default to BLUE if input is invalid
+    with open("color.txt", "w") as file:
+        file.write(selected_color)  # Save the selected color to a file
+    print("Color has been selected")
+    print_logo(selected_color)
+    main()
+
+def nuker():
+    question = int(input("Length of file name: "))
+    text_in_file = input("Text in file: ")
+    directory_path = input("Enter directory path to save the file (leave blank for current directory): ")
+    name = ''.join(random.choices(string.ascii_letters, k=question))
+    file_path = os.path.join(directory_path, name)
+
+    if not os.path.exists(file_path):
+        with open(file_path, 'w') as file:
+            file.write(text_in_file)
+            print(f"File named '{name}' was created at path: {file_path}")
+    else:
+        print(f"File '{name}' already exists at path: {file_path}")
+
+def increase_letters(text, increase_count=1):
+    result = ""
+    for char in text:
+        if char.isalpha():
+            offset = ord('a') if char.islower() else ord('A')
+            result += chr(((ord(char) - offset + increase_count) % 26) + offset)
+        else:
+            result += char
+    return result
+
+
+def Decipher():
+    sentence = input("Sentence: ")
+    increase_count = int(input("Enter the number of times each letter should increase: "))
+
+    unique_letters = sorted(set(filter(str.isalpha, sentence.lower())))
+
+    for char in unique_letters:
+        count = sentence.lower().count(char)
+        print(f"The letter '{char}' occurs {count} time(s) in the sentence.")
+
+    increased_sentence = increase_letters(sentence, increase_count)
+    print(f"\nOriginal Sentence: {sentence}")
+    print(f"Sentence with increased letters: {increased_sentence}")
+    main()
+
+
+def taskmanagergaps():
+    try:
+        x = int(input("How many times do you want to open task manager: "))  # Convert input to integer
+        for i in range(x):
+            subprocess.run('taskmgr', shell=True)
+    except ValueError:
+        print("Please enter a valid number.")
+
+def connected_devices():
+    # Get disk information
+    disks = psutil.disk_partitions(all=True)
+    print("Connected Disks:")
+    for disk in disks:
+        print(f"Device: {disk.device} - Mountpoint: {disk.mountpoint} - File system type: {disk.fstype}")
+
+    # Get network interfaces information
+    interfaces = psutil.net_if_addrs()
+    print("\nConnected Network Interfaces:")
+    for interface_name, interface_addresses in interfaces.items():
+        print(f"Interface: {interface_name}")
+        for address in interface_addresses:
+            print(f"  Family: {address.family}, Address: {address.address}, Netmask: {address.netmask}, Broadcast: {address.broadcast}")
+
+def Google():
+    def auto_google(query):
+        try:
+            # Construct the Google search URL
+            search_url = f"https://www.google.com/search?q={'+'.join(query.split())}"
+
+            # Open the browser with the Google search URL
+            webbrowser.open(search_url)
+
+        except Exception as e:
+            print("An error occurred:", str(e))
+
+    # Example usage
+    query_to_search = input("What do you want to google: ")
+    auto_google(query_to_search)
+
+def main():
+    try:
+        with open("color.txt", "r") as file:
+            stored_color = file.read().strip()  # Read the stored color from the file
+        print_logo(stored_color)
+    except FileNotFoundError:
+        print_logo()
+
+    while True:
+        print("1. Customize tool\n2. Decipher\n3. Search for gaps in the system/Exploits\n4. Google search\n5. Computer nuker")
+        choice = input("Enter your choice: ")
+        if choice == "open ceasar-decipher":
+            webbrowser.open("https://www.kryptowissen.de/caesar-chiffre-praxis.php")
+        if choice == "1":
+            costumize()
+            break  # Exit the loop after customization
+        elif choice == "2":
+            print("2.1 Decipher(Add letters to letters + count amount of letters in word/sentence)")
+            ok = input("Enter your choice: ")
+            if ok == "2.1":
+                Decipher()
+            break  # Exit the loop after Decipher function is executed
+        elif choice == "3":
+            ga = print(Fore.YELLOW+"Before you do this read this: This is only for educational purposes \nand some exploiting commands are not legal to use, so make sure to get allowence if you do it! YOU RUN THIS AT YOUR OWN RISK! ITS A REAL HACKING EXPLOITING!\n3.1 Open task manager\n3.2 Connected devices to your computer\n3.3 Terminal\n3.4 Wlan Password")
+            taskmanger = input("Enter your choice: ")
+            if taskmanger == "3.1":
+                taskmanagergaps()
+            elif taskmanger == "3.2":
+                connected_devices()
+            elif taskmanger == "3.3":
+                terminal()
+            elif taskmanger == "3.4":
+                wlanpassword()
+
+        elif choice == "4":
+            Google()
+        elif choice == "5":
+            nuker()
+
+if __name__ == "__main__":
+    main()
+ 
